@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_layout"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/holo_red_dark"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/searchInput"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:layout_marginBottom="@dimen/normal_margin"
+        android:layout_marginRight="16dp"
+        android:ems="12"
+        android:hint="@string/search"
+        android:imeOptions="flagNoExtractUi" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/select_item_single"
+        tools:context=".ui.base.bridge.BridgePickerDialog" />
+</LinearLayout>
+
