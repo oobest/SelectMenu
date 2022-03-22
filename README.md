@@ -14,6 +14,6 @@ SelectMenu.create(getSupportFragmentManager(), view, bridgeData)
                 temp = null;
             }
         currentBridge = temp;
-        selectBridge.setText(currentBridge.getName());
+        ((TextView) view).setText(currentBridge.getName());
         });
 ```

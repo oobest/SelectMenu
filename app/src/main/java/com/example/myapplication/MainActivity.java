@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                         temp = null;
                     }
                     currentBridge = temp;
-                    selectBridge.setText(currentBridge.getName());
+                    ((TextView) view).setText(currentBridge.getName());
                 });
     }
 }
