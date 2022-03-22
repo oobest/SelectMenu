@@ -17,7 +17,7 @@ dependencies {
 }
 ```
 
-String 列表数据传入使用
+String 列表数据示例
 ```
 SelectMenu.create(getSupportFragmentManager(), view, stringDataList)
         .setSelectedItem(defaultSelect) // 默认选中项
@@ -32,7 +32,19 @@ SelectMenu.create(getSupportFragmentManager(), view, stringDataList)
         });
 ```
 
-对象list数据传入使用方法
+对象list数据传入示例
+```
+public class BridgeData {
+
+    private final int id;
+
+    private final String name;
+    
+    ....
+    // getter / setter
+}
+```
+
 ```
 SelectMenu.create(getSupportFragmentManager(), view, bridgeDataList)
         .setItemTextMapper(BridgeData::getName) // 下拉菜单显示项
