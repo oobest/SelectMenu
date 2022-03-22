@@ -2,7 +2,7 @@
 Android SelectMenu
 
 使用方法
-'''
+```
 SelectMenu.create(getSupportFragmentManager(), view, bridgeData)
         .setItemTextMapper(BridgeData::getName) // 下拉菜单显示项
         .setIsSameFunction((o1, o2) -> o1.getId() == o2.getId()) // 判断o1,o2是否为同一个对象
@@ -16,4 +16,4 @@ SelectMenu.create(getSupportFragmentManager(), view, bridgeData)
         currentBridge = temp;
         selectBridge.setText(currentBridge.getName());
         });
-'''
+```
