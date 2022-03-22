@@ -36,17 +36,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void showMenu(View view) {
         List<String> nameList = Arrays.asList("桥梁一", "桥梁二", "桥梁三", "桥梁四", "桥梁五", "桥梁六", "桥梁七", "桥梁8", "桥梁9", "桥梁10");
-        List<BridgeData> bridgeData = new ArrayList<>();
+        List<BridgeData> bridgeDataList = new ArrayList<>();
         int count = 0;
         for (String name : nameList) {
-            bridgeData.add(new BridgeData(count, name));
+            bridgeDataList.add(new BridgeData(count, name));
             count++;
         }
 //           List<String> dataList = Arrays.asList("桥梁一", "桥梁二", "桥梁三");
 
-        SelectMenu.create(getSupportFragmentManager(), view, bridgeData)
+        SelectMenu.create(getSupportFragmentManager(), view, bridgeDataList)
                 .setItemTextMapper(BridgeData::getName) // 下拉菜单显示项
                 .setIsSameFunction((o1, o2) -> o1.getId() == o2.getId()) // 判断o1,o2是否为同一个对象
+                .setSearchable(bridgeDataList.size()>5) //bridgeDataList数量大于5时，打开搜索框
                 .setSelectedItem(currentBridge) // 默认选中项
                 .show(o -> {
                     BridgeData temp = o;
