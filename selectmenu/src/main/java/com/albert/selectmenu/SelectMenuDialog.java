@@ -1,18 +1,10 @@
-package com.agrivo.selectmenu;
+package com.albert.selectmenu;
 
 import android.app.Dialog;
-
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -26,6 +18,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,19 +163,16 @@ public class SelectMenuDialog extends DialogFragment {
         Display display = requireActivity().getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
-        DisplayMetrics real = new DisplayMetrics();
-        display.getRealMetrics(real);
 
-        int barHeight = real.heightPixels - outMetrics.heightPixels;
+        int barHeight = getStatusBarHeight();
 
-        int displayHeight = outMetrics.heightPixels;
         int yPosition = inputData.getYPosition();
         int viewHeight = inputData.getSelectViewHeight();
 
-        int bottomOffset = displayHeight - (yPosition + viewHeight);
-        int availableMaxH = Math.max(bottomOffset, yPosition);
+        int downAvailableHeight = outMetrics.heightPixels - (yPosition + viewHeight);
+        int upAvailableHeight = yPosition - barHeight;
+
         int margin = getResources().getDimensionPixelOffset(R.dimen.select_menu_normal_margin);
-//        int margin = 0;
 
         int measuredHeight;
         if (inputData.getDataItems().size() < 20) {
@@ -182,27 +180,24 @@ public class SelectMenuDialog extends DialogFragment {
             mainLayout.measure(inputData.getSelectViewWidth(), h);
             measuredHeight = mainLayout.getMeasuredHeight();
         } else {
-            measuredHeight = availableMaxH;
+            measuredHeight = Math.max(upAvailableHeight, downAvailableHeight);
         }
 
         int dx = inputData.getXPosition();
-        int dy = yPosition + viewHeight;
+        int dy;
         // 默认下面展示下拉菜单
-        int dHeight = bottomOffset - margin;
-        // 1、优先下面展示下拉菜单，如果没有多余的空间，
-        // 2、判断上面有更多空间（h下面<h上面），如果有则上面展示，如果没有，还是下面展示
-        // 3、判断内容h,与可用空间的大小
-        if (measuredHeight <= dHeight) {
+        int dHeight;
+
+        if (measuredHeight <= downAvailableHeight || (downAvailableHeight > upAvailableHeight)) {
             // 从下面展示
-            dHeight = measuredHeight;
-        } else if (yPosition > bottomOffset) {
+            dHeight = Math.min(measuredHeight, downAvailableHeight) - margin;
+            dy = yPosition + viewHeight;
+        } else {
             // 上面空间大于下面空间
-            dHeight = yPosition - barHeight;
-            if (measuredHeight <= dHeight) {
-                dHeight = measuredHeight;
-            }
+            dHeight = upAvailableHeight - margin;
             dy = yPosition - dHeight;
         }
+        dy = dy - barHeight;
 
         Dialog dialog = getDialog();
         if (dialog != null) {
@@ -225,6 +220,14 @@ public class SelectMenuDialog extends DialogFragment {
         }
     }
 
+    public int getStatusBarHeight() {
+        DisplayMetrics dm = new DisplayMetrics();
+        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        //应用区域
+        Rect outRect1 = new Rect();
+        requireActivity().getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect1);
+        return dm.heightPixels - outRect1.height();  //状态栏高度=屏幕高度-应用区域高度
+    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {

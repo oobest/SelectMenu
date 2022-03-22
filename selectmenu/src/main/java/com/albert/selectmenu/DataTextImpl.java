@@ -1,4 +1,4 @@
-package com.agrivo.selectmenu;
+package com.albert.selectmenu;
 
 /**
  * @author albert

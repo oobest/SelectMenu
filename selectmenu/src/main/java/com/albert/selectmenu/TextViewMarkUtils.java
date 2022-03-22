@@ -1,7 +1,9 @@
-package com.agrivo.selectmenu;
+package com.albert.selectmenu;
 
-import android.support.v4.text.HtmlCompat;
+
 import android.text.TextUtils;
+
+import androidx.core.text.HtmlCompat;
 
 
 /**

@@ -1,8 +1,10 @@
-package com.agrivo.selectmenu;
+package com.albert.selectmenu;
 
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
+
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
