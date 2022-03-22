@@ -1,6 +1,22 @@
 # SelectMenu
 Android SelectMenu
 
+Add it in your root build.gradle at the end of repositories:
+```
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+Add the dependency
+```
+dependencies {
+	        implementation 'com.github.oobest:SelectMenu:v1.0.0'
+}
+```
+
 String 列表数据传入使用
 ```
 SelectMenu.create(getSupportFragmentManager(), view, stringDataList)
