@@ -1,4 +1,4 @@
-package com.example.myapplication.menu;
+package com.agrivo.selectmenu;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -52,7 +52,7 @@ public class DataItem implements Parcelable {
         this.text = in.readString();
     }
 
-    public static final Parcelable.Creator<DataItem> CREATOR = new Parcelable.Creator<DataItem>() {
+    public static final Creator<DataItem> CREATOR = new Creator<DataItem>() {
         @Override
         public DataItem createFromParcel(Parcel source) {
             return new DataItem(source);

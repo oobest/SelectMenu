@@ -1,9 +1,8 @@
-package com.example.myapplication.menu;
+package com.agrivo.selectmenu;
 
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,39 +22,87 @@ public class SelectMenu<T> {
     private List<T> dataList;
     private T selectedItem;
     private View bindView;
+    private Integer minWidth;
     private boolean searchable = false;
+    private String searchInputHint;
     private SameItemImpl<T> isSameFunction;
 
-    public SelectMenu<T> setFragmentManager(@NonNull FragmentManager fragmentManager) {
+    private ItemTextMapper<T> itemTextMapper;
+
+    /**
+     * @param fragmentManager
+     * @param bindView        绑定View
+     * @param dataList        列表数据
+     * @return
+     */
+    public static <Data> SelectMenu<Data> create(@NonNull FragmentManager fragmentManager,
+                                                 @NonNull View bindView,
+                                                 @NonNull List<Data> dataList) {
+        return new SelectMenu<>(fragmentManager, bindView, dataList);
+    }
+
+    private SelectMenu(@NonNull FragmentManager fragmentManager, @NonNull View bindView, @NonNull List<T> dataList) {
         this.fragmentManager = fragmentManager;
-        return this;
-    }
-
-    public SelectMenu<T> setDataList(@NonNull List<T> dataList) {
+        this.bindView = bindView;
         this.dataList = dataList;
-        return this;
     }
 
+    /**
+     * @param selectedItem 默认选中内容
+     */
     public SelectMenu<T> setSelectedItem(T selectedItem) {
         this.selectedItem = selectedItem;
         return this;
     }
 
-    public SelectMenu<T> setBindView(@NonNull View bindView) {
-        this.bindView = bindView;
-        return this;
-    }
-
+    /**
+     * @param searchable 是否显示过滤搜索框
+     */
     public SelectMenu<T> setSearchable(boolean searchable) {
         this.searchable = searchable;
         return this;
     }
 
+    /**
+     * @param isSameFunction 两个元素是否相同判断
+     */
     public SelectMenu<T> setIsSameFunction(SameItemImpl<T> isSameFunction) {
         this.isSameFunction = isSameFunction;
         return this;
     }
 
+    /**
+     * 显示的Text内容
+     *
+     * @param itemTextMapper
+     * @return 元素的显示内容方法回调
+     */
+    public SelectMenu<T> setItemTextMapper(ItemTextMapper<T> itemTextMapper) {
+        this.itemTextMapper = itemTextMapper;
+        return this;
+    }
+
+    public SelectMenu<T> setSearchInputHint(String searchInputHint) {
+        this.searchInputHint = searchInputHint;
+        return this;
+    }
+
+    /**
+     * 设置最小宽度
+     *
+     * @param minWidth
+     * @return
+     */
+    public SelectMenu<T> setMinWidth(Integer minWidth) {
+        this.minWidth = minWidth;
+        return this;
+    }
+
+    /**
+     * 显示下拉菜单
+     *
+     * @param menuCallback 选择结果回调函数
+     */
     public void show(@NonNull SelectMenuCallback<T> menuCallback) {
         Objects.requireNonNull(fragmentManager, "fragmentManger=null");
         Objects.requireNonNull(bindView, "bindView=null");
@@ -63,6 +110,9 @@ public class SelectMenu<T> {
             throw new RuntimeException("dataList=null or dataList is empty");
         }
         int width = bindView.getWidth();
+        if (minWidth != null && minWidth > 0) {
+            width = minWidth;
+        }
         int height = bindView.getHeight();
         int[] location = new int[2];
         bindView.getLocationOnScreen(location);
@@ -74,6 +124,7 @@ public class SelectMenu<T> {
                 .setSelectViewWidth(width)
                 .setSelectViewHeight(height)
                 .setXPosition(location[0])
+                .setSearchInputHint(searchInputHint)
                 .setYPosition(location[1])
                 .setSearchable(searchable);
         SelectMenuDialog.show(fragmentManager, dialogInput, new SelectMenuDialogCallback() {
@@ -123,7 +174,9 @@ public class SelectMenu<T> {
 
     private String getText(T t) {
         String text;
-        if (t instanceof String) {
+        if (itemTextMapper != null) {
+            text = itemTextMapper.getText(t);
+        } else if (t instanceof String) {
             text = (String) t;
         } else if (t instanceof DataTextImpl) {
             text = ((DataTextImpl) t).getText();

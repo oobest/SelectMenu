@@ -1,4 +1,4 @@
-package com.example.myapplication.menu;
+package com.agrivo.selectmenu;
 
 /**
  * @author albert

@@ -1,4 +1,4 @@
-package com.example.myapplication.menu;
+package com.agrivo.selectmenu;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -33,6 +33,8 @@ public class SelectMenuDialogInput implements Parcelable {
 
     // 是否显示搜索按钮
     private boolean searchable;
+
+    private String searchInputHint;
 
     public SelectMenuDialogInput setDataItems(List<DataItem> dataItems) {
         this.dataItems = dataItems;
@@ -69,6 +71,11 @@ public class SelectMenuDialogInput implements Parcelable {
         return this;
     }
 
+    public SelectMenuDialogInput setSearchInputHint(String searchInputHint){
+        this.searchInputHint = searchInputHint;
+        return this;
+    }
+
     public List<DataItem> getDataItems() {
         return dataItems;
     }
@@ -97,6 +104,10 @@ public class SelectMenuDialogInput implements Parcelable {
         return searchable;
     }
 
+    public String getSearchInputHint() {
+        return searchInputHint;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -110,6 +121,8 @@ public class SelectMenuDialogInput implements Parcelable {
         dest.writeInt(this.selectViewHeight);
         dest.writeInt(this.xPosition);
         dest.writeInt(this.yPosition);
+        dest.writeByte(this.searchable ? (byte) 1 : (byte) 0);
+        dest.writeString(this.searchInputHint);
     }
 
     public void readFromParcel(Parcel source) {
@@ -119,6 +132,8 @@ public class SelectMenuDialogInput implements Parcelable {
         this.selectViewHeight = source.readInt();
         this.xPosition = source.readInt();
         this.yPosition = source.readInt();
+        this.searchable = source.readByte() != 0;
+        this.searchInputHint = source.readString();
     }
 
     public SelectMenuDialogInput() {
@@ -131,6 +146,8 @@ public class SelectMenuDialogInput implements Parcelable {
         this.selectViewHeight = in.readInt();
         this.xPosition = in.readInt();
         this.yPosition = in.readInt();
+        this.searchable = in.readByte() != 0;
+        this.searchInputHint = in.readString();
     }
 
     public static final Creator<SelectMenuDialogInput> CREATOR = new Creator<SelectMenuDialogInput>() {

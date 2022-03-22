@@ -1,9 +1,18 @@
-package com.example.myapplication.menu;
+package com.agrivo.selectmenu;
 
 import android.app.Dialog;
-import android.graphics.Point;
+
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -17,17 +26,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.myapplication.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,20 +75,22 @@ public class SelectMenuDialog extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle arguments = requireArguments();
+        Bundle arguments = getArguments();
+        Objects.requireNonNull(arguments, "arguments==null");
         inputData = arguments.getParcelable("inputData");
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.picker_with_filter_dialog, container, false);
         mainLayout = view.findViewById(R.id.main_layout);
         searchInput = view.findViewById(R.id.searchInput);
         recyclerView = view.findViewById(R.id.recyclerView);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(requireContext(),
                 DividerItemDecoration.VERTICAL);
-        Drawable drawable = ContextCompat.getDrawable(requireContext(), R.drawable.recycler_list_divider);
+        Drawable drawable = ContextCompat.getDrawable(requireContext(), R.drawable.select_menu_list_divider);
         Objects.requireNonNull(drawable, "drawable=null");
         dividerItemDecoration.setDrawable(drawable);
         recyclerView.addItemDecoration(dividerItemDecoration);
@@ -117,6 +117,14 @@ public class SelectMenuDialog extends DialogFragment {
             }
         });
         updateRecyclerView();
+        if (inputData.isSearchable()) {
+            searchInput.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(inputData.getSearchInputHint())) {
+                searchInput.setHint(inputData.getSearchInputHint());
+            }
+        } else {
+            searchInput.setVisibility(View.GONE);
+        }
     }
 
 
@@ -142,11 +150,15 @@ public class SelectMenuDialog extends DialogFragment {
                     }
                 });
         recyclerView.setAdapter(dataItemAdapter);
+        if (inputData.getSelectedItem() != null) {
+            int position = dataItemAdapter.computePosition(inputData.getSelectedItem());
+            if (position > -1) {
+                recyclerView.scrollToPosition(position);
+            }
+        }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    private void computeWindSize() {
         Display display = requireActivity().getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
@@ -161,7 +173,7 @@ public class SelectMenuDialog extends DialogFragment {
 
         int bottomOffset = displayHeight - (yPosition + viewHeight);
         int availableMaxH = Math.max(bottomOffset, yPosition);
-        int margin = getResources().getDimensionPixelOffset(R.dimen.normal_margin);
+        int margin = getResources().getDimensionPixelOffset(R.dimen.select_menu_normal_margin);
 //        int margin = 0;
 
         int measuredHeight;
@@ -202,11 +214,27 @@ public class SelectMenuDialog extends DialogFragment {
                 layoutParams.height = dHeight;
                 layoutParams.width = inputData.getSelectViewWidth();
                 window.setAttributes(layoutParams);
-
-                window.setBackgroundDrawableResource(R.drawable.ic_white_rectangle_radius2);
+                window.setBackgroundDrawableResource(R.drawable.select_menu_bg);
+                View decorView = window.getDecorView();
+                if (decorView != null) {
+                    decorView.setPadding(0, 0, 0, 0);
+                }
                 window.setGravity(Gravity.LEFT | Gravity.TOP);
             }
             dialog.setCanceledOnTouchOutside(true);
         }
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        computeWindSize();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        computeWindSize();
     }
 }

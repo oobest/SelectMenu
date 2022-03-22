@@ -1,14 +1,13 @@
-package com.example.myapplication.menu;
+package com.agrivo.selectmenu;
 
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.myapplication.R;
 
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ItemVi
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.select_item_single, parent, false);
+        View view = layoutInflater.inflate(R.layout.select_menu_single_select_item, parent, false);
         return new ItemViewHolder(view);
     }
 
@@ -70,7 +69,7 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ItemVi
      * @param dataItem
      * @return
      */
-    private int computePosition(DataItem dataItem) {
+    public int computePosition(DataItem dataItem) {
         int position = -1;
         int index = dataItem.getIndex();
         for (int i = 0; i < dataList.size(); i++) {
@@ -85,9 +84,12 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ItemVi
 
         private final TextView textView;
 
+        private final ImageView selectedIcon;
+
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.textView);
+            selectedIcon = itemView.findViewById(R.id.selectedIcon);
         }
 
         void bind(DataItem item) {
@@ -111,6 +113,7 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ItemVi
                 selected = selectItem.getIndex() == item.getIndex();
             }
             itemView.setSelected(selected);
+            selectedIcon.setVisibility(selected ? View.VISIBLE : View.GONE);
             textView.setText(TextViewMarkUtils.format(item.getText(), markString));
         }
     }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="MenuSelectSearchView">
+        <item name="android:background">@drawable/select_menu_input_view_frame_deep_blue</item>
+        <item name="android:textColorHint">#26000000</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#D9000000</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">@dimen/select_menu_normal_padding</item>
+        <item name="android:paddingRight">@dimen/select_menu_normal_padding</item>
+        <item name="android:drawableRight">@drawable/select_menu_baseline_search_24</item>
+    </style>
+</resources>

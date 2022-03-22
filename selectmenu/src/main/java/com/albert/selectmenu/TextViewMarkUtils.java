@@ -1,8 +1,8 @@
-package com.example.myapplication.menu;
+package com.agrivo.selectmenu;
 
+import android.support.v4.text.HtmlCompat;
 import android.text.TextUtils;
 
-import androidx.core.text.HtmlCompat;
 
 /**
  * @author albert
